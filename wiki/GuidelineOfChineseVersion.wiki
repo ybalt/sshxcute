@@ -234,7 +234,7 @@ SSHXCUTE框架允许你配置很多参数，具体的API调用格式为：
 ==4.1 判定任务成功与否的过滤关键字==
 让我们回顾一下[http://code.google.com/p/sshxcute/wiki/GuidelineOfChineseVersion?ts=1284194028&updated=GuidelineOfChineseVersion#3.5_结果对象 3.5小节]所讲的，每当执行SSHExec.exec(CustomTask)后，都会返回一个包含了结果信息的Result对象。这个对象有个布尔变量——isSuccess，用来判定任务是否执行成功。问题来了，SSHXCUTE是如何判定的呢？它依赖于什么？
 
-默认地，有两个条件判定任务是否执行成功。第一是命令或者脚本的返回码（return code），它必须是0；第二个是打印输入的信息，如果不包含以下字符串，则可以判定成功。
+默认地，有两个条件判定任务是否执行成功。第一是命令或者脚本的返回码（return code），它必须是0；第二是打印输入的信息，如果不包含以下字符串，则可以判定成功。
 
   * "Usage", 
   * "usage",
