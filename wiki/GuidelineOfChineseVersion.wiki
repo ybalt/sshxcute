@@ -270,6 +270,8 @@ SSHExec.setOption(IOptionName.HALT_ON_FAILURE, false);
 SSHExec.setOption(IOptionName.HALT_ON_FAILURE, true);
 }}}
 
+默认是设为false的。
+
 例如，我们要依次执行“pwd” > “ABCD” >”echo $HOME”，其中第二个命令是错误的，任务执行失败，如果你想忽略这个错误的任务，继续执行剩下的那个”echo $HOME”任务，你可以关闭HALT_ON_FAILURE开关，请看下面的代码：
 SSHExec.setOption(IOptionName.HALT_ON_FAILURE, false);
 {{{
