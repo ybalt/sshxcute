@@ -85,3 +85,136 @@ ExecShellScript的构造函数是：
   * `public ExecShellScript(String shellPath, String args)`
 	
   * `public ExecShellScript(String shellPath)`
+
+
+==3.4 上传文件==
+我们会遇到一种情况，要执行的脚本是存在于我们本地的，我们必须先把其上传到远程的机器上。这项工作sshxcute同样可以为我们完成，例如，我们想要把c:/data2/data目录下的所有文件上传到远程机器上的/home/tsadmin目录下，我们可以
+{{{
+ssh.uploadAllDataToServer("c:/data2/data", "/home/tsadmin");
+}}}
+
+如果想只上传单一文件，例如只上传项目路径下的data/sshxcute_test.sh到/home/tsadmin，我们可以这样
+{{{
+ssh.uploadSingleDataToServer("data/sshxcute_test.sh","/home/tsadmin");
+}}}
+
+这里要注意下，我们必须把顺序搞清楚，上传的步骤必须在执行前，连接成功后。例如：
+{{{
+CustomTask ct2 = new ExecShellScript("/home/tsadmin","./sshxcute_test.sh","hello world");
+ssh.connect();  // 连接成功后
+ssh.uploadSingleDataToServer("data/sshxcute_test.sh", "/home/tsadmin");
+ssh.exec(ct1);  // 执行前
+}}}
+
+当然这里不仅仅限于必须执行脚本，如果你只想上传文件可以单独执行uploadSingleDataToServer与uploadSingleDataToServer方法。
+
+==3.5 结果对象==
+所有的任务类型，包括我们上面已经讲解过的ExecCommand、ExecShellScript还有我们接下来会说明的自定义类任务，在执行完毕后，都会返回一个结果对象（Result）。这个结果对象包含了命令或者脚本的返回代码（return code）、标准输入、错误输出。还有它会提供一个布尔类型的isSuccess变量供程序员判断是否任务执行成功，在4.1章节我们将会详细介绍sshxcute是如何判断任务执行成功与否的，这个判断的条件也是可以配置的。
+
+例如，我们的SSHExec.exec(CustomTask)总会返回一个结果对象，我们可以利用自己的逻辑代码打印一些有用的信息。
+{{{
+Result res = ssh.exec(task);
+if (res.isSuccess)
+{
+	System.out.println("Return code: " + res.rc);
+	System.out.println("sysout: " + res.sysout);
+}
+else
+{
+	System.out.println("Return code: " + res.rc);
+	System.out.println("error message: " + res.error_msg);
+}
+}}}
+
+==3.6 总结==
+下面我们举个例子囊括上面所有的技术话题，做个总结。
+假设我们想在远程的Linux服务器（ip是9.125.71.115）上执行一个shell脚本。sshxcute_test.sh的内容请见附录A。代码如下：
+{{{
+// 新建一个SSHExec引用
+SSHExec ssh = null;
+// 我们下面所有的代码都放在try-catch块中
+try {
+    // 实例化一个ConnBean对象，参数依次是IP地址、用户名和密码
+    ConnBean cb = new ConnBean("9.125.71.115", "username","password");
+    // 将刚刚实例化的ConnBean对象作为参数传递给SSHExec的单例方法得到一个SSHExec对象
+    ssh = SSHExec.getInstance(cb);		
+    // 新建一个ExecCommand对象，引用必须是其继承的CustomTask类
+    CustomTask ct1 = new ExecCommand("chmod 755 /home/tsadmin/sshxcute_test.sh");
+    // 新建一个ExecShellScript对象，引用必须是其继承的CustomTask类
+    CustomTask ct2 = new ExecShellScript("/home/tsadmin","./sshxcute_test.sh","hello world");
+    // 连接服务器
+    ssh.connect();
+    // 上传shell脚本到/home/tsadmin目录
+    ssh.uploadSingleDataToServer("data/sshxcute_test.sh", "/home/tsadmin");
+    // 执行命令
+    ssh.exec(ct1);
+    // 执行脚本并且返回一个Result对象
+    Result res = ssh.exec(ct2);
+    // 检查执行结果，如果执行成功打印输出，如果执行失败，打印错误信息
+    if (res.isSuccess)
+    {
+        System.out.println("Return code: " + res.rc);
+        System.out.println("sysout: " + res.sysout);
+    }
+    else
+    {
+	System.out.println("Return code: " + res.rc);
+	System.out.println("error message: " + res.error_msg);
+    }
+} 
+catch (TaskExecFailException e) 
+{
+    System.out.println(e.getMessage());
+    e.printStackTrace();
+} 
+catch (Exception e) 
+{
+    System.out.println(e.getMessage());
+    e.printStackTrace();
+} 
+finally 
+{
+    ssh.disconnect();	
+}
+}}}
+
+
+*输出：*
+{{{
+SSHExec initializing ...
+Session initialized and associated with user credential tsadmin123
+SSHExec initialized successfully
+SSHExec trying to connect username@9.125.71.115
+SSH connection established
+Ready to transfer local file 'data/sshxcute_test.sh' to server directory '/home/tsadmin'
+Connection channel established succesfully
+Start to upload
+Upload success
+channel disconnect
+Command is chmod 755 /home/tsadmin/sshxcute_test.sh
+Connection channel established succesfully
+Start to run command
+Connection channel closed
+Check if exec success or not ... 
+Execute successfully for command: chmod 755 /home/tsadmin/sshxcute_test.sh
+Now wait 5 seconds to begin next task ...
+Connection channel disconnect
+Command is cd /home/tsadmin ; ./sshxcute_test.sh hello world 
+Connection channel established succesfully
+Start to run command
+Login success
+
+Connection channel closed
+Check if exec success or not ... 
+Execute successfully for command: cd /home/tsadmin ; ./sshxcute_test.sh hello world 
+Now wait 5 seconds to begin next task ...
+Connection channel disconnect
+R1 Return code: 0
+R1 sysout: Login success
+
+SSH connection shutdown
+}}}
+
+
+==3.7 日志==
+所有的输出与日志都将保存在你执行SSHXCUTE的路径下。如果你讲sshxcute.jar导入到你的Eclipse项目中，日志名称是sshxcute.log，它保存在项目的根目录下。
