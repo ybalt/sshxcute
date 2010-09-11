@@ -111,7 +111,7 @@ ssh.exec(ct1);  // 执行前
 当然这里不仅仅限于必须执行脚本，如果你只想上传文件可以单独执行uploadSingleDataToServer与uploadSingleDataToServer方法。
 
 ==3.5 结果对象==
-所有的任务类型，包括我们上面已经讲解过的ExecCommand、ExecShellScript还有我们接下来会说明的自定义类任务，在执行完毕后，都会返回一个结果对象（Result）。这个结果对象包含了命令或者脚本的返回代码（return code）、标准输入、错误输出。还有它会提供一个布尔类型的isSuccess变量供程序员判断是否任务执行成功，在4.1章节我们将会详细介绍sshxcute是如何判断任务执行成功与否的，这个判断的条件也是可以配置的。
+所有的任务类型，包括我们上面已经讲解过的ExecCommand、ExecShellScript还有我们接下来会说明的自定义类任务，在执行完毕后，都会返回一个结果对象（Result）。这个结果对象包含了命令或者脚本的返回代码（return code）、标准输入、错误输出。还有它会提供一个布尔类型的isSuccess变量供程序员判断是否任务执行成功，在[http://code.google.com/p/sshxcute/wiki/GuidelineOfChineseVersion?ts=1284185859&updated=GuidelineOfChineseVersion#4.1_判定任务成功与否的过滤关键字 4.1章节]我们将会详细介绍sshxcute是如何判断任务执行成功与否的，这个判断的条件也是可以配置的。
 
 例如，我们的SSHExec.exec(CustomTask)总会返回一个结果对象，我们可以利用自己的逻辑代码打印一些有用的信息。
 {{{
