@@ -48,3 +48,39 @@ ssh.disconnect();
 }}}
 	
 第四步是才是SSHEXEC框架的核心所在——执行命令或者脚本。接下来的部分将主要介绍这个主题。
+
+
+==3.2 远程执行命令==
+让我们先来看一段代码再来详细解释。因为如果你已经具备了面向对象编程经验，你将会发现这是如此的简单。
+{{{
+CustomTask sampleTask = new ExecCommand("echo 123");
+ssh.exec(sampleTask);
+}}}
+
+ExecCommand类集成了CustomTask类，我们新建一个ExecCommand对象，他的引用类型是CustomTask。下图展示了ExecCommand、ExecShellScript和CustomTask的类图，从中可以看出他们的关系。
+
+http://neoremind.net/wp-content/uploads/2010/09/sshxcute_classdiagram.jpg
+
+ExecCommand的构造函数只接收一个字符串类型变量。注意ExecCommand可以执行多个命令，只需要用分隔符“;”分隔各个命令即可。例如：
+{{{
+CustomTask sampleTask = new ExecCommand("echo 123; echo 456; echo 789");
+}}}
+
+ExecCommand的构造函数是：
+  * `public ExecCommand(String...args)`
+
+把ExecCommand对象作为参数传入SSHExec.exec(CustomTask)方法，这样就可以直接运行了。
+
+==3.3 远程执行shell脚本==
+远程执行shell脚本几乎与3.2小节的远程执行命令一致。例如，如果你想执行/home/tsadmin路径下的sshxcute_test.sh脚本，并且带两个参数“hello world”，你可以这样调用：
+{{{
+CustomTask ct1 = new ExecShellScript("/home/tsadmin","./sshxcute_test.sh","hello world");
+ssh.exec(ct1);
+}}}
+
+ExecShellScript的构造函数是：
+  * `public ExecShellScript(String workingDir, String shellPath, String args)`
+	
+  * `public ExecShellScript(String shellPath, String args)`
+	
+  * `public ExecShellScript(String shellPath)`
