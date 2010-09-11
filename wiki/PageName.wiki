@@ -1,0 +1,51 @@
+=1. 概述=
+正如名字所示，SSHXCUTE是一个框架。它允许工程师利用Java代码通过SSH连接远程执行Linux/UNIX系统上的命令或者脚本，这种方式不管是针对软件测试还是系统部署，都简化了自动化测试与系统环境部署的步骤。
+
+SSHXCUTE的设计旨在：
+  * 最小的系统需求 – 仅仅开启SSH连接即可。
+  * 易用性 – 工程师利用Java代码执行命令或脚本。
+  * 内置命令/脚本任务执行功能。
+  * 易扩展 – 用户可以自定义任务类型并集成于sshxcute框架。
+
+=2. 适用范围与限制=
+==2.1 限制==
+远程Linux/UNIX机器必须开启SSH连接，并且需要用户名密码认证登录。
+你只能将sshxcute的jar引入你的基于Java的项目才能使用。
+
+==2.2 适用范围==
+*场景1.* 如果你有一大堆命令或者脚本需要在远程机器上跑一跑（比如部署一下开发或者生产环境），而这些手动输入命令的工作又是如此的无聊，你也不想花功夫去编写一个脚本统一调用这些命令或脚本。更好的情况是你在用Java IDE（比如Eclipse），好的！为什么不试试sshxcute呢? 在你的工作主机比如windows或ubuntu上执行命令，那看着多惬意啊~
+
+*场景2.* 你的自动化工具是用Java写的，你有一些需求需要在远程的Linux/UNIX服务器上执行一些命令或脚本，sshxcute正你的大爱！把sshxcute.jar导入到你的项目中，你就可以神奇般的调用它的API了！开始远程执行旅行~
+
+=3. 使用指南=
+首先，你必须确保sshxcute.jar已经在你的JRE的$CLASSPATH中，然后你才可以开始。接下来展示的如何在Eclipse IDE中配置Java Build Path。右键单击项目 > 属性 > Java构建路径。更多的配置步骤请上网搜索。
+
+http://neoremind.net/wp-content/uploads/2010/09/howtoimport.jpg
+
+==3.1初始化准备工作==
+通常当我们需要在远程Linux/UNIX系统上执行命令时，以下是必须的步骤：
+
+  * 1) 打开SSH连接客户端（例如Putty）
+  * 2) 输入IP
+  * 3) 输入用户名、密码登陆
+  * 4) 登陆成功后输入命令行
+  * 5) 断开登陆
+
+前三个步骤可以通过sshxcute的Java API模拟实现：
+{{{
+// 新建一个ConnBean对象，三个参数依次是ip地址、用户名、密码
+ConnBean cb = new ConnBean("ip ", "username","password");
+// 将上面新建的ConnBean作为参数传递给SSHExec的静态单例方法，得到一个SSHExec的实例
+getInstance(ConnBean) to retrieve a singleton SSHExec instance
+ssh = SSHExec.getInstance(cb);		
+// 利用上面得到的SSHExec实例连接主机
+ssh.connect();
+}}}
+
+第五步实现如下：
+{{{
+ssh.disconnect();
+}}}
+	
+第四步是才是SSHEXEC框架的核心所在——执行命令或者脚本。接下来的部分将主要介绍这个主题。
+
