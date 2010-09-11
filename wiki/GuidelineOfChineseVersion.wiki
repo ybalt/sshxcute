@@ -13,7 +13,7 @@ SSHXCUTE的设计旨在：
 =2. 适用范围与限制=
 ==2.1 限制==
   * 远程Linux/UNIX机器必须开启SSH连接，并且需要用户名密码认证登录。
-  * 你只能将sshxcute的jar引入你的基于Java的项目才能使用或者将这个jar包之余$CLASSPATH。
+  * 你只能将sshxcute的jar引入你的基于Java的项目才能使用或者将这个jar包置于$CLASSPATH。
   * JDK版本要高于或等于5.0
 
 ==2.2 适用范围==
