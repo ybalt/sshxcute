@@ -64,9 +64,9 @@ ExecCommand类集成了CustomTask类，我们新建一个ExecCommand对象，他
 
 http://neoremind.net/wp-content/uploads/2010/09/sshxcute_classdiagram.jpg
 
-ExecCommand的构造函数只接收一个字符串类型变量。注意ExecCommand可以执行多个命令，只需要用分隔符“;”分隔各个命令即可。例如：
+ExecCommand的构造函数只接收一个字符串类型变量。注意ExecCommand可以执行多个命令，只需要用分隔符“,”分隔各个命令即可。例如：
 {{{
-CustomTask sampleTask = new ExecCommand("echo 123; echo 456; echo 789");
+CustomTask sampleTask = new ExecCommand("echo 123", "echo 456, "echo 789");
 }}}
 
 ExecCommand的构造函数是：
