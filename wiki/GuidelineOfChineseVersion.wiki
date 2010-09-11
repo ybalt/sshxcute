@@ -471,7 +471,7 @@ ssh.exec(task1);
 		}
 }}}
 
-==例二==
+==例2==
 {{{
                 SSHExec ssh = null;
 		try {
@@ -504,7 +504,7 @@ ssh.exec(task1);
 		}
 }}}
 
-==例三==
+==例3==
 {{{
                 SSHExec ssh = null;
 		try {
@@ -532,7 +532,7 @@ ssh.exec(task1);
 		}
 }}}
 
-==例四==
+==例4==
 {{{
                 String uploadFileDirPath = "/home/tsadmin/data";
 		String RFIDIC_HOME = "/opt/ibm/InfoSphere/TraceabilityServer";
