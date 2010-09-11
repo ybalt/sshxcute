@@ -102,7 +102,7 @@ ssh.uploadSingleDataToServer("data/sshxcute_test.sh","/home/tsadmin");
 
 这里要注意下，我们必须把顺序搞清楚，上传的步骤必须在执行前，连接成功后。例如：
 {{{
-CustomTask ct2 = new ExecShellScript("/home/tsadmin","./sshxcute_test.sh","hello world");
+CustomTask ct1 = new ExecShellScript("/home/tsadmin","./sshxcute_test.sh","hello world");
 ssh.connect();  // 连接成功后
 ssh.uploadSingleDataToServer("data/sshxcute_test.sh", "/home/tsadmin");
 ssh.exec(ct1);  // 执行前
