@@ -39,7 +39,6 @@ http://neoremind.net/wp-content/uploads/2010/09/howtoimport.jpg
 // 新建一个ConnBean对象，三个参数依次是ip地址、用户名、密码
 ConnBean cb = new ConnBean("ip ", "username","password");
 // 将上面新建的ConnBean作为参数传递给SSHExec的静态单例方法，得到一个SSHExec的实例
-getInstance(ConnBean) to retrieve a singleton SSHExec instance
 ssh = SSHExec.getInstance(cb);		
 // 利用上面得到的SSHExec实例连接主机
 ssh.connect();
