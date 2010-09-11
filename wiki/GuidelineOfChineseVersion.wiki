@@ -341,3 +341,100 @@ INTEVAL_TIME_BETWEEN_TASKS => 5000
 SSH_PORT_NUMBER => 22
 ERROR_MSG_BUFFER_TEMP_FILE_PATH => c:\123.err
 }}}
+
+
+=5. API扩展=
+这个章节是为想基于SSHXCUTE做扩展的开发人员读的。开发者可以开发适用于自己项目的各种任务。
+所有的任务都必须继承CustomTask类。这个类包含以下抽象方法：
+
+{{{
+       /**
+	 * 通过命令或脚本的输出检查任务是否执行成功
+	 * 
+	 * @param stdout
+	 * @return 如果成功返回true，失败返回false
+	 */
+	protected abstract Boolean checkStdOut(String stdout);
+	
+	/**
+	 * 通过返回代码检查任务是否执行成功
+	 * 
+	 * @param exitCode 
+	 * @return 如果成功返回true，失败返回false
+	 */
+	protected abstract Boolean checkExitCode(int exitCode);
+
+	/**
+	 * 返回要在远程机器上执行的命令
+	 * 
+	 * @return 命令行字符串
+	 */
+	public abstract String getCommand();
+	
+	/**
+	 * 任务的描述信息
+	 * 
+	 * @return 任务描述信息字符串
+	 */
+	public abstract String getInfo();
+}}}
+
+
+如果你想新建一种任务类型，之间覆盖CustomTask中的这些方法即可。下面是一个实际的场景来展示如何扩展并适用自定义类型的任务。
+
+*需求：*
+产品A有一个deployMetadata.sh 的shell脚本。开发组不想使用ExecShellScript类，而想使用自定义类型的任务。DeployMetadata.sh的使用方法是
+{{{
+/opt/ProductA/bin/deployMetadata.sh –dba_user=system –dba_password=pw4dba
+}}}
+
+*实现：*
+{{{
+public class DeployMetadata extends CustomTask{
+
+	protected String dba_user = "";
+	
+	protected String dba_password = "";
+	
+	public DeployMetadata(String dba_user, String dba_password){
+		this.dba_user = dba_user;
+		this.dba_password = dba_password;
+	}
+	
+	
+	public Boolean checkStdOut(String stdout){
+		Iterator<String> iter = err_sysout_keyword_list.iterator();
+		while(iter.hasNext()){
+			if (stdout.contains(iter.next()))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public Boolean checkExitCode(int exitCode){
+		if (exitCode == 0)
+			return true;
+		else
+			return false;
+	}
+	
+	public String getCommand(){
+		return "/opt/ProductA/bin/deployMetadata.sh" + " -dba_user=" + dba_user + " -dba_password=" + dba_password;
+	}
+	
+	
+	public String getInfo(){
+		return "Deploy metadata ";
+	}
+}
+}}}
+
+*使用方法：*
+{{{
+CustomTask task1 = new DeployMetadata ("system", “pw4dba”);
+ssh.connect();
+ssh.exec(task1);
+}}}
+
