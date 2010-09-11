@@ -605,6 +605,7 @@ ssh.exec(task1);
 }}}
 
 =附录1.=
+{{{
 #!/bin/bash
 if [ $# -ne 2 ];then
         echo "usage: sshxcute_test.sh username password"
@@ -619,3 +620,4 @@ if [ "$USERNAME" = "hello" -a "$PASSWORD" = "world" ];then
 fi
 echo "Login falied"
 exit 2
+}}}
