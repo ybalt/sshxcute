@@ -272,7 +272,7 @@ SSHExec.setOption(IOptionName.HALT_ON_FAILURE, true);
 
 默认是设为false的。
 
-例如，我们要依次执行“pwd” > “ABCD” >”echo $HOME”，其中第二个命令是错误的，任务执行失败，如果你想忽略这个错误的任务，继续执行剩下的那个”echo $HOME”任务，你可以关闭HALT_ON_FAILURE开关，请看下面的代码：
+例如，我们要依次执行“pwd” > “ABCD” >”echo $HOME”，其中第二个命令是错误的，任务执行失败，如果你想忽略这个错误的任务，继续执行剩下的那个”echo $HOME”任务，你可以关闭HALT_ON_FAILURE开关，要么干脆不改变默认值。请看下面的代码：
 SSHExec.setOption(IOptionName.HALT_ON_FAILURE, false);
 {{{
 ConnBean cb = new ConnBean("rfidic-1.svl.ibm.com", "tsadmin","u7i8o9p0");
@@ -284,7 +284,6 @@ ssh.connect();
 Result r1 = ssh.exec(ct1);
 Result r2 = ssh.exec(ct2);
 Result r3 = ssh.exec(ct3); //仍然执行
-assertEquals(r1.rc, 0);
 System.out.println("Return code: " + r1.rc);
 System.out.println("sysout: " + r1.sysout);
 System.out.println("error msg: " + r1.error_msg);
