@@ -59,7 +59,7 @@ CustomTask sampleTask = new ExecCommand("echo 123");
 ssh.exec(sampleTask);
 }}}
 
-ExecCommand类集成了CustomTask类，我们新建一个ExecCommand对象，他的引用类型是CustomTask。下图展示了ExecCommand、ExecShellScript和CustomTask的类图，从中可以看出他们的关系。
+ExecCommand类继承了CustomTask类，我们新建一个ExecCommand对象，他的引用类型是CustomTask。下图展示了ExecCommand、ExecShellScript和CustomTask的类图，从中可以看出他们的关系。
 
 http://neoremind.net/wp-content/uploads/2010/09/sshxcute_classdiagram.jpg
 
