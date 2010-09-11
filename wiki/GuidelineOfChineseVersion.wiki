@@ -219,7 +219,7 @@ SSH connection shutdown
 
 
 ==3.7 日志==
-所有的输出与日志都将保存在你执行SSHXCUTE的路径下。如果你讲sshxcute.jar导入到你的Eclipse项目中，日志名称是sshxcute.log，它保存在项目的根目录下。
+所有的输出与日志都将保存在你执行SSHXCUTE的路径下，日志的名称为sshxcute.log。如果你把sshxcute.jar导入到你的Eclipse项目中，它将保存在项目的根目录下。
 
 
 =4. 配置=
