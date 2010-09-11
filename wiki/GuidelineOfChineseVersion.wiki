@@ -21,7 +21,7 @@ SSHXCUTE的设计旨在：
 *场景2.* 你的自动化工具是用Java写的，你有一些需求需要在远程的Linux/UNIX服务器上执行一些命令或脚本，sshxcute正你的大爱！把sshxcute.jar导入到你的项目中，你就可以神奇般的调用它的API了！开始远程执行旅行~
 
 =3. 使用指南=
-首先，你必须确保sshxcute.jar已经在你的JRE的$CLASSPATH中，然后你才可以开始。接下来展示的如何在Eclipse IDE中配置Java Build Path。右键单击项目 > 属性 > Java构建路径。更多的配置步骤请上网搜索。
+首先，你必须确保sshxcute.jar已经在你的JRE的$CLASSPATH中，然后你才可以开始。接下来展示的是如何在Eclipse IDE中配置Java Build Path。右键单击项目 > 属性 > Java构建路径。更多的配置步骤请上网搜索。
 
 http://neoremind.net/wp-content/uploads/2010/09/howtoimport.jpg
 
