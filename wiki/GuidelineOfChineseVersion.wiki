@@ -1,4 +1,6 @@
 #labels Featured
+<wiki:toc max_depth="4" />
+
 =1. 概述=
 正如名字所示，SSHXCUTE是一个框架。它允许工程师利用Java代码通过SSH连接远程执行Linux/UNIX系统上的命令或者脚本，这种方式不管是针对软件测试还是系统部署，都简化了自动化测试与系统环境部署的步骤。
 
