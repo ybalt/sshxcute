@@ -130,7 +130,7 @@ else
 
 ==3.6 总结==
 下面我们举个例子囊括上面所有的技术话题，做个总结。
-假设我们想在远程的Linux服务器（ip是9.125.71.115）上执行一个shell脚本。sshxcute_test.sh的内容请见附录A。代码如下：
+假设我们想在远程的Linux服务器（ip是9.125.71.115）上执行一个shell脚本。sshxcute_test.sh的内容请见[http://code.google.com/p/sshxcute/wiki/GuidelineOfChineseVersion?ts=1284186106&updated=GuidelineOfChineseVersion#附录1. 附录A]。代码如下：
 {{{
 // 新建一个SSHExec引用
 SSHExec ssh = null;
