@@ -218,3 +218,126 @@ SSH connection shutdown
 
 ==3.7 日志==
 所有的输出与日志都将保存在你执行SSHXCUTE的路径下。如果你讲sshxcute.jar导入到你的Eclipse项目中，日志名称是sshxcute.log，它保存在项目的根目录下。
+
+
+=4. 配置=
+SSHXCUTE框架允许你配置很多参数，具体的API调用格式为：
+
+  * `SSHExec.setOption(String optionName, String/int/long value);`
+
+这句声明必须放在任何任务执行前面，配置才生效。
+
+下面的小节具体讲解各个参数的使用方法。
+
+==4.1 判定任务成功与否的过滤关键字==
+让我们回顾一下3.5小节所讲的，每当执行SSHExec.exec(CustomTask)后，都会返回一个包含了结果信息的Result对象。这个对象有个布尔变量——isSuccess，用来判定任务是否执行成功。问题来了，SSHXCUTE是如何判定的呢？它依赖于什么？
+
+默认地，有两个条件判定任务是否执行成功。第一是命令或者脚本的返回码（return code），它必须是0；第二个是打印输入的信息，如果不包含以下字符串，则可以判定成功。
+
+  * "Usage", 
+  * "usage",
+  * "not found",
+  * "fail",
+  * "Fail",
+  * "error",
+  * "Error",
+  * "exception",
+  * "Exception",
+  * "not a valid"
+
+返回码是不可配置的，它必须是0，这个是公认的，因为在Linux/UNIX中执行命令或脚本的成功必返回0
+
+错误信息过滤条件是可以配置的，如果你想这样假定：如果标准输出包含"error",”fail”,”exception”字符串则判定任务执行失败。可以用一下代码：
+{{{
+String[] reset_keyword = { "error",”fail”,”exception” };
+CustomTask ct1 = new ExecCommand("exit 0");
+ct1.resetErrSysoutKeyword(reset_keyword);
+}}}
+
+这里要注意reset_keyword数组不支持正则表达式。
+
+
+==4.2 多任务执行时遇到任务失败是继续还是停止==
+当有多个任务执行的时候，并不是所有的都会成功。如果遇到失败，你不想继续下面的任务的时候，你可以关闭HALT_ON_FAILURE开关：
+{{{
+SSHExec.setOption(IOptionName.HALT_ON_FAILURE, false);
+}}}
+
+如果遇到失败，你仍然想继续执行剩下的任务，你可以打开HALT_ON_FAILURE开关：
+{{{
+SSHExec.setOption(IOptionName.HALT_ON_FAILURE, true);
+}}}
+
+例如，我们要依次执行“pwd” > “ABCD” >”echo $HOME”，其中第二个命令是错误的，任务执行失败，如果你想忽略这个错误的任务，继续执行剩下的那个”echo $HOME”任务，你可以关闭HALT_ON_FAILURE开关，请看下面的代码：
+SSHExec.setOption(IOptionName.HALT_ON_FAILURE, false);
+{{{
+ConnBean cb = new ConnBean("rfidic-1.svl.ibm.com", "tsadmin","u7i8o9p0");
+ssh = SSHExec.getInstance(cb);
+CustomTask ct1 = new ExecCommand("pwd");
+CustomTask ct2 = new ExecCommand("ABCD");
+CustomTask ct3 = new ExecCommand("echo $HOME");
+ssh.connect();
+Result r1 = ssh.exec(ct1);
+Result r2 = ssh.exec(ct2);
+Result r3 = ssh.exec(ct3); //仍然执行
+assertEquals(r1.rc, 0);
+System.out.println("Return code: " + r1.rc);
+System.out.println("sysout: " + r1.sysout);
+System.out.println("error msg: " + r1.error_msg);
+System.out.println("Return code: " + r2.rc);
+System.out.println("sysout: " + r3.sysout);
+System.out.println("error msg: " + r3.error_msg);
+}}}
+
+==4.3 SSH端口设置==
+默认的SSH连接端口是22，如果你的远程主机用的不是这个端口而是18，你可以这样设置：
+{{{
+SSHExec.setOption(IOptionName.SSH_PORT_NUMBER, 18);
+}}}
+
+==4.4 错误输入临时存放文件路径==
+SSHXCUTE会把命令/脚本的错误输出临时存放在一个本地文件中。这仅仅是内部需要，用户不必改变这个文件的路径。默认的的存储路径是$USERHOME/sshxcute_err.msg。
+
+例如：
+  * C:\Documents and Settings\Administrator\sshxcute_err.msg 对于Windows
+  * /home/user/sshxcute_err.msg对于Linux/UNIX
+
+*强烈建议用户不要修改这个参数*。如果想改变错误临时文件路径请这样做：
+{{{
+SSHExec.setOption(IOptionName.ERROR_MSG_BUFFER_TEMP_FILE_PATH, "c:\\123.err");
+}}}
+
+==4.5 不同任务之间的间隔时间==
+当多任务依次执行时，你可以设置它们之间的间隔时间。这意味着当前一个任务执行结束后，要Sleep也就是等待一段时间再继续执行下一个任务。这在一种情形下极其有用，比如前一个任务执行需要很长时间，后一个任务要完全等它结束后才能开始。参考下面代码：
+{{{
+SSHExec.setOption(IOptionName.INTEVAL_TIME_BETWEEN_TASKS, 5000l);
+}}}
+
+注意这个参数的类型必须是长整形，所以别忘记加“l”。
+
+==4.6 超时==
+每个任务都要在一定时间内完成，如果超过这个时间，程序会自动退出。这个时间就叫做TIMOUT。你可以这样设置timeout参数：
+{{{
+SSHExec.setOption(IOptionName.TIMEOUT, 36000l);
+}}}
+
+注意这个参数的类型必须是长整形，所以别忘记加“l”。
+
+
+==4.7 打印所有参数==
+要打印出所有参数，参考下面代码：
+{{{
+SSHExec.showEnvConfig();
+}}}
+
+输出：
+{{{
+******************************************************
+The list below shows sshxcute configuration parameter
+******************************************************
+TIMEOUT => 36000
+HALT_ON_FAILURE => true
+INTEVAL_TIME_BETWEEN_TASKS => 5000
+SSH_PORT_NUMBER => 22
+ERROR_MSG_BUFFER_TEMP_FILE_PATH => c:\123.err
+}}}
